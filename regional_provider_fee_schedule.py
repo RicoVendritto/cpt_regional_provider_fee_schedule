@@ -5,15 +5,15 @@ from decouple import config
 
 
 def regional_provider_fee_schedule():
-    # neuropsych_list = 'optum_neuropsych_ny.csv'
-    neuropsych_list = 'optum_neuropsych_non_ny.csv'
+    neuropsych_list = 'optum_neuropsych_ny.csv'
+    # neuropsych_list = 'optum_neuropsych_non_ny.csv'
 
     with open(neuropsych_list) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",")
         line_count = 0
         for row in csv_reader:
             if line_count == 0:
-                continue
+                print(f'Column names are {", ".join(row)}')
             else:
                 create_new_line(list_to_dict(row))
             line_count += 1
@@ -29,8 +29,8 @@ def list_to_dict(row):
 def create_new_line(dict):
     front_end_carriers = [10, 11, 23]
     ny_regions = [33, 34, 35, 36, 37, 38, 39]
-    # regions = ny_regions ## NY REGIONS
-    regions = list(set(range(1, 57)) - set(ny_regions))  # NON NY REGIONS
+    regions = ny_regions  # NY REGIONS
+    # regions = list(set(range(1, 57)) - set(ny_regions))  # NON NY REGIONS
 
     for fec in front_end_carriers:
         for reg in regions:
