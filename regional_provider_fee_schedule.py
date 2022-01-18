@@ -13,9 +13,8 @@ def regional_provider_fee_schedule():
         line_count = 0
         for row in csv_reader:
             if line_count == 0:
-                print(f'Column names are {", ".join(row)}')
+                continue
             else:
-                # print(list_to_dict(row))
                 create_new_line(list_to_dict(row))
             line_count += 1
 
@@ -33,11 +32,11 @@ def create_new_line(dict):
     # regions = ny_regions ## NY REGIONS
     regions = list(set(range(1, 57)) - set(ny_regions))  # NON NY REGIONS
 
-    for x in front_end_carriers:
-        for y in regions:
-            dict["frontEndCarrierId"] = x
+    for fec in front_end_carriers:
+        for reg in regions:
+            dict["frontEndCarrierId"] = fec
             dict["effectiveDate"] = "2022-01-01T17:00:00.000Z"
-            dict["providerRegionId"] = y
+            dict["providerRegionId"] = reg
             rev_dict = {"feeSchedules": [dict]}
             json_body = json.dumps(rev_dict, indent=4)
             print(json_body)
@@ -48,11 +47,11 @@ def post_new_lines(json_body):
     base_url = config('BASE_URL')
     auth = config('AUTH')
 
-    x = requests.post(base_url, data=json_body, headers={
-                      "Authorization": auth})
+    resp = requests.post(base_url, data=json_body, headers={
+        "Authorization": auth})
 
-    print(x.text)
-    print(x.status_code)
+    print(resp.text)
+    print(resp.status_code)
 
 
 def main():
